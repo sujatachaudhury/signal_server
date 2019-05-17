@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Signalman</title>
+  </head>
+  <body>
+    <ul id="activeUsers"></ul>
+    <input type="text" id="usernameInput">
+    <input type="text" id="roomInput">
+    <button id="connectBtn">connect</button>
+    <script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="lib/signalmaster/socket.js"></script>
+    <script>
+      var signal;
+      $(document).ready(function () {
+        signal = new SignalSocket('ws://localhost:8001/');
+        signal.setCallback('update.clients', function (message) {
+          var clients = message.data;
+          console.log(clients);
+          var list = '';
+          for(var i=0; i < clients.length; i++)
+            list += '<li>' + clients[i].username + ' - ' + clients[i].room + '</li>';
+          console.log(list);
+          $('#activeUsers').html(list);
+        });
+        $('#connectBtn').click(function () {
+          signal.connect($('#usernameInput').val(), $('#roomInput').val());
+        });
+      });
+    </script>
+  </body>
+</html>
